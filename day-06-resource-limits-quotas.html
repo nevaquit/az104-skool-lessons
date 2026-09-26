@@ -1,0 +1,30 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Day 6: Resource Limits and Quotas</title><style>body{font-family:sans-serif;max-width:800px;margin:2em auto;padding:0 1em;line-height:1.6}table{border-collapse:collapse;margin:1em 0}th,td{border:1px solid #999;padding:6px 10px;text-align:left}pre{background:#f4f4f4;padding:1em;overflow-x:auto}</style></head><body>
+<p>Module 1: Identity and Governance | AZ-104 Domain: Manage Azure identities and governance (20-25%)</p>
+<h2>Watch (60 seconds)</h2>
+<p>[Video slot: Day 6 TikTok, &quot;Resource Limits and Quotas in Sixty Seconds.&quot; Embeds here once published. The lesson below stands on its own.]</p>
+<h2>The concept</h2>
+<p>Azure does not let you consume infinite resources. Every subscription has default limits, and most are enforced per region. 2 kinds exist:</p>
+<ul><li><strong>Adjustable quotas.</strong> These can be raised with a support request. The classic example is vCPU quotas per VM series per region: a new subscription might allow only 10 vCPUs of a given family in East US. Need 50? File a quota increase request.</li><li><strong>Hard limits.</strong> These cannot be raised. Examples: 980 resource groups per subscription, 250 storage accounts per region per subscription, 50 tags per resource. Design around them.</li></ul>
+<p>Why quotas exist: they protect you from runaway deployments (and runaway bills) and protect the platform from any single tenant hogging capacity.</p>
+<p>Where to look: in the portal, open <strong>Subscriptions</strong>, pick 1, and open <strong>Usage + quotas</strong> under Settings. Filter by region and provider to see current usage against the ceiling. In the CLI, <code>az vm list-usage --location eastus</code> shows VM related quotas.</p>
+<p>3 facts the exam repeats:</p>
+<ol><li><strong>Quotas are per subscription per region.</strong> Hitting the vCPU ceiling in East US does not stop you from deploying in West Europe.</li><li><strong>New subscriptions start lower.</strong> Fresh or low trust subscriptions get smaller default quotas, especially for VM vCPUs. Quota increase requests on new subscriptions can take longer.</li><li><strong>The fixes for &quot;quota exceeded&quot; are always the same 3:</strong> deploy in a different region, deploy in a different subscription, or request a quota increase through <strong>Help + support</strong> (issue type: Service and subscription limits (quotas)).</li></ol>
+<p>Quotas are ceilings, not allowances. They never &quot;reset&quot; each month. If you use 8 of 10 allowed vCPUs, you have 2 left until you delete something or raise the quota.</p>
+<h2>Key vocabulary</h2>
+<ul><li><strong>Quota</strong>: an adjustable ceiling on a resource type, enforced per subscription per region.</li><li><strong>(Usage) limit</strong>: a hard ceiling that cannot be raised.</li><li><strong>Support request</strong>: the formal way to ask Microsoft to raise an adjustable quota: Help + support, issue type Service and subscription limits (quotas).</li><li><strong>vCPU quota</strong>: the most commonly hit quota: how many virtual CPUs of a VM family you may run per region.</li></ul>
+<h2>Try it</h2>
+<p>Read only. Nothing is created and nothing is billed.</p>
+<p><strong>In the portal:</strong></p>
+<ol><li>Search for <strong>Subscriptions</strong>, open yours, and select <strong>Usage + quotas</strong> under Settings.</li><li>Set the region filter to East US (or your home region). Find <strong>Total Regional vCPUs</strong> and 1 VM family line such as <strong>Standard DSv5 Family vCPUs</strong>. Note the current usage versus the limit.</li><li>Change the provider filter to Storage and find the storage account limit for the region.</li></ol>
+<p><strong>In the CLI (Cloud Shell is fine):</strong></p>
+<ol><li>Show VM usage for a region: <code>az vm list-usage --location eastus --output table</code>.</li><li>Find the line for total regional vCPUs and compare it with what the portal showed.</li></ol>
+<p><strong>Clean up:</strong> nothing was created.</p>
+<h2>Worked example: Meridian Health</h2>
+<p>Meridian Health&#x27;s prod scale-out fails on a Friday night: &quot;QuotaExceeded: Standard Dv5 Family vCPUs in East US.&quot; The on-call admin does not panic. She knows the 3 fixes: the deployment can wait for a quota increase ticket, it can go to West US 2 where headroom exists, or a second subscription can take the load. She files the support request for a permanent raise and deploys the urgent VMs to West US 2 to unblock the release. Monday&#x27;s retro adds &quot;check quota headroom&quot; to the pre-deployment checklist.</p>
+<h2>Check your understanding</h2>
+<ol><li>Are quotas enforced per resource group or per subscription per region?</li><li>A deployment fails with a quota error in East US. Name 3 ways to fix it.</li><li>True or false: every Azure limit can be raised by filing a support request.</li><li>Where in the portal do you compare current usage against quota?</li></ol>
+<h2>Exam tip</h2>
+<p>&quot;Deployment failed with quota exceeded&quot; has exactly 3 answers: different region, different subscription, support request for a quota increase. The exam also likes the new subscription twist: a recently created subscription fails where an older 1 succeeds, because default quotas start lower.</p>
+<h2>Key takeaways</h2>
+<ul><li>Quotas are adjustable ceilings per subscription per region; hard limits cannot be raised.</li><li>vCPU quotas per VM family are the most commonly hit ceiling.</li><li>Check Usage + quotas in the portal or <code>az vm list-usage</code> in the CLI.</li><li>Fix quota errors with a new region, a new subscription, or a support request.</li><li>Quotas never reset; they are ceilings, not monthly allowances.</li></ul>
+</body></html>

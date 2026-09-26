@@ -1,0 +1,29 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Day 4: Creating and Managing Resource Groups</title><style>body{font-family:sans-serif;max-width:800px;margin:2em auto;padding:0 1em;line-height:1.6}table{border-collapse:collapse;margin:1em 0}th,td{border:1px solid #999;padding:6px 10px;text-align:left}pre{background:#f4f4f4;padding:1em;overflow-x:auto}</style></head><body>
+<p>Module 1: Identity and Governance | AZ-104 Domain: Manage Azure identities and governance (20-25%)</p>
+<h2>Watch (60 seconds)</h2>
+<p>[Video slot: Day 4 TikTok, &quot;Creating and Managing Resource Groups in Sixty Seconds.&quot; Embeds here once published. The lesson below stands on its own.]</p>
+<h2>The concept</h2>
+<p>A resource group is a logical container for resources. Every resource in Azure lives in exactly 1 resource group: no more, no less. Resource groups are how you organize the lifecycle of things that live and die together.</p>
+<p>5 facts that carry the exam weight:</p>
+<ol><li><strong>1 resource group per resource.</strong> A VM cannot sit in 2 resource groups at once.</li><li><strong>The resource group has a location, and it is only metadata.</strong> The location you pick stores the resource group&#x27;s metadata. Resources inside the group can live in completely different regions. An East US resource group can hold a storage account in West Europe.</li><li><strong>You cannot nest resource groups and you cannot rename 1.</strong> To &quot;rename,&quot; you create a new resource group and move the resources (Day 5).</li><li><strong>Deleting a resource group deletes everything inside it.</strong> This is the fastest cleanup tool in Azure and the most dangerous click in the portal. The exam loves &quot;accidental deletion&quot; scenarios.</li><li><strong>Resource groups are a scope.</strong> RBAC roles, policies, tags, and locks can all be assigned at the resource group level, affecting everything inside.</li></ol>
+<p>Good naming conventions pay off at 2 in the morning: <code>rg-patientportal-prod</code> tells you the container type, the app, and the environment in 1 glance.</p>
+<h2>Key vocabulary</h2>
+<ul><li><strong>Resource group</strong>: a logical container for Azure resources. Every resource belongs to exactly 1.</li><li><strong>Location (region)</strong>: for a resource group, the region where its metadata is stored. It does not restrict where member resources live.</li><li><strong>Resource</strong>: anything you create in Azure: VMs, storage accounts, virtual networks, and more.</li><li><strong>Deployment</strong>: the act of creating resources, often from a template, into a resource group.</li></ul>
+<h2>Try it</h2>
+<p>Creating and deleting an empty resource group is free.</p>
+<p><strong>In the portal:</strong></p>
+<ol><li>Search for <strong>Resource groups</strong> and open it. Click <strong>Create</strong>.</li><li>Pick your subscription, enter the name <code>rg-az104-day04</code>, and choose a region, for example East US. Note the region picker: this sets the metadata location only.</li><li>Click <strong>Review + create</strong>, then <strong>Create</strong>. Open the new group and confirm it is empty.</li></ol>
+<p><strong>In the CLI (Cloud Shell is fine):</strong></p>
+<ol><li>Create 1: <code>az group create --name rg-az104-day04-cli --location eastus</code>.</li><li>List your groups: <code>az group list --query &quot;[].{name:name, location:location}&quot; --output table</code>.</li><li>Clean up both groups: <code>az group delete --name rg-az104-day04 --yes</code> and <code>az group delete --name rg-az104-day04-cli --yes</code>.</li></ol>
+<p><strong>Clean up:</strong> both lab resource groups deleted. Verify with <code>az group list --output table</code>.</p>
+<h2>Worked example: Meridian Health</h2>
+<p>Meridian Health standardizes on <code>rg-&lt;app&gt;-&lt;env&gt;</code> names in East US:</p>
+<ul><li><code>rg-patientportal-prod</code>: the patient portal and its database</li><li><code>rg-patientportal-dev</code>: the dev copy</li><li><code>rg-backup-prod</code>: Recovery Services vaults</li></ul>
+<p>When the dev environment is rebuilt each quarter, the team deletes <code>rg-patientportal-dev</code> and recreates it. 1 delete removes every dev resource at once, which is exactly why production resource groups also get a delete lock (you will meet locks on Day 293, but remember the danger now).</p>
+<h2>Check your understanding</h2>
+<ol><li>Can a single virtual machine belong to 2 resource groups at the same time?</li><li>Your resource group is in East US. Can it contain a storage account in West Europe? Why?</li><li>What happens to the resources when you delete their resource group?</li><li>True or false: you can rename a resource group in the portal.</li></ol>
+<h2>Exam tip</h2>
+<p>&quot;Someone deleted the resource group&quot; is exam shorthand for &quot;everything inside is gone.&quot; The fix the exam wants is prevention: resource locks and careful RBAC. Also remember the location trap: the resource group location restricts nothing about where member resources live.</p>
+<h2>Key takeaways</h2>
+<ul><li>Every Azure resource lives in exactly 1 resource group.</li><li>The resource group location stores metadata only; member resources can live anywhere.</li><li>Resource groups cannot be nested or renamed.</li><li>Deleting a resource group deletes everything inside it.</li><li>Resource groups are a scope for RBAC, policy, tags, and locks.</li></ul>
+</body></html>

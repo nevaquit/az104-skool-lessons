@@ -1,0 +1,31 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Day 18: Creating Custom RBAC Roles</title><style>body{font-family:sans-serif;max-width:800px;margin:2em auto;padding:0 1em;line-height:1.6}table{border-collapse:collapse;margin:1em 0}th,td{border:1px solid #999;padding:6px 10px;text-align:left}pre{background:#f4f4f4;padding:1em;overflow-x:auto}</style></head><body>
+<p>Module 1: Identity and Governance | AZ-104 Domain: Manage Azure identities and governance (20-25%)</p>
+<h2>Watch (60 seconds)</h2>
+<p>[Video slot: Day 18 TikTok, &quot;Creating Custom RBAC Roles in Sixty Seconds.&quot; Embeds here once published. The lesson below stands on its own.]</p>
+<h2>The concept</h2>
+<p>Built-in roles cover common jobs, but sometimes no built-in matches least privilege. The helpdesk needs to restart virtual machines but must not delete them, change networks, or touch storage. No built-in does exactly that. That gap is what custom roles fill.</p>
+<p>A custom role is a JSON document with 5 permission fields:</p>
+<ul><li><strong>Actions</strong>: the allowed control plane operations. Wildcards work: &quot;Microsoft.Compute/virtualMachines/*&quot; allows everything on VMs, while listing &quot;Microsoft.Compute/virtualMachines/read&quot;, &quot;Microsoft.Compute/virtualMachines/start/action&quot;, and &quot;Microsoft.Compute/virtualMachines/restart/action&quot; allows only viewing, starting, and restarting.</li><li><strong>NotActions</strong>: subtractions from Actions, used to carve out dangerous operations.</li><li><strong>DataActions</strong> and <strong>NotDataActions</strong>: the same idea for the data plane.</li><li><strong>AssignableScopes</strong>: where this role may be assigned, such as a subscription or management group. A custom role can only be assigned inside its assignable scopes, so this field is also a guardrail.</li></ul>
+<p>Plus the identity fields: Name, Description, and a flag marking it custom.</p>
+<p>2 ways to create 1. In the portal: open <strong>Access control (IAM)</strong>, select <strong>Add</strong>, then <strong>Add custom role</strong>. You can clone an existing role and edit it, which is faster and safer than starting from blank JSON, or paste your own JSON. In the CLI: save the JSON to a file and run <code>az role definition create --role-definition &lt;file.json&gt;</code>.</p>
+<p>After creating it, verify with <strong>Check access</strong> before rolling it out: assign it to a test group, confirm the effective permissions look right, and only then assign it for real.</p>
+<h2>Key vocabulary</h2>
+<ul><li><strong>Actions / NotActions</strong>: allowed control plane operations, minus carved-out exceptions.</li><li><strong>DataActions / NotDataActions</strong>: allowed data plane operations, minus exceptions.</li><li><strong>AssignableScopes</strong>: the scopes where the custom role may be assigned.</li><li><strong>Clone a role</strong>: starting a custom role from a built-in role&#x27;s permission set.</li></ul>
+<h2>Try it</h2>
+<p>You need any Azure account, including a free 1. You will walk the custom role wizard and cancel before creating anything.</p>
+<p><strong>In the portal:</strong></p>
+<ol><li>Open a subscription or resource group, then <strong>Access control (IAM)</strong>, then <strong>Add</strong>, then <strong>Add custom role</strong>.</li><li>Choose <strong>Clone a role</strong> and pick <strong>Reader</strong> as the baseline.</li><li>In the JSON editor, add to Actions: &quot;Microsoft.Compute/virtualMachines/start/action&quot; and &quot;Microsoft.Compute/virtualMachines/restart/action&quot;.</li><li>Step through the tabs to <strong>Review + create</strong>, read the summary, then <strong>Cancel</strong> instead of creating. Nothing is saved.</li></ol>
+<p><strong>The CLI alternative (described, not executed):</strong></p>
+<ol><li>Save your role JSON to a file, for example vm-operator.json, with Name, Actions, NotActions, and AssignableScopes filled in.</li><li>Create it with: <code>az role definition create --role-definition vm-operator.json</code></li></ol>
+<p><strong>Clean up:</strong> the wizard was cancelled, so no custom role was created.</p>
+<h2>Worked example: Meridian Health</h2>
+<p>Meridian&#x27;s helpdesk handles VM reboots for the whole company. Giving them Virtual Machine Contributor would also let them delete VMs and resize them, which is more power than the job needs. The cloud team creates a &quot;VM Operator&quot; custom role:</p>
+<ul><li>Actions: read virtual machines, start, restart, and deallocate them.</li><li>NotActions: delete virtual machines.</li><li>AssignableScopes: the Meridian-Prod subscription.</li></ul>
+<p>Assigned to the helpdesk Entra group, the role lets technicians fix stuck VMs at 3 AM without the ability to destroy anything. When auditors ask why helpdesk staff cannot delete production VMs, the NotActions entry is the documented answer.</p>
+<h2>Check your understanding</h2>
+<ol><li>What does AssignableScopes control, and why does it matter?</li><li>Why is cloning Reader safer than writing a custom role from a blank document?</li><li>Which CLI command creates a custom role from a JSON file?</li><li>True or false: a custom role with a subscription assignable scope can be assigned at a resource group inside that subscription.</li></ol>
+<h2>Exam tip</h2>
+<p>The exam tests the building blocks, not JSON memorization: Actions versus DataActions, what NotActions does, and that AssignableScopes limits where the role can be used. If a scenario says &quot;no built-in role fits&quot; or &quot;must not be able to delete,&quot; think custom role.</p>
+<h2>Key takeaways</h2>
+<ul><li>Create custom roles when no built-in role matches least privilege.</li><li>Actions and DataActions grant; NotActions and NotDataActions carve back.</li><li>Wildcards like &quot;Microsoft.Compute/virtualMachines/*&quot; are powerful, so prefer narrow action lists.</li><li>AssignableScopes limits where the role may be assigned.</li><li>Clone a built-in role instead of starting from blank JSON, and verify with Check access.</li></ul>
+</body></html>

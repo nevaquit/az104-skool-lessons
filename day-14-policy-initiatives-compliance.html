@@ -1,0 +1,30 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Day 14: Policy Initiatives and Compliance</title><style>body{font-family:sans-serif;max-width:800px;margin:2em auto;padding:0 1em;line-height:1.6}table{border-collapse:collapse;margin:1em 0}th,td{border:1px solid #999;padding:6px 10px;text-align:left}pre{background:#f4f4f4;padding:1em;overflow-x:auto}</style></head><body>
+<p>Module 1: Identity and Governance | AZ-104 Domain: Manage Azure identities and governance (20-25%)</p>
+<h2>Watch (60 seconds)</h2>
+<p>[Video slot: Day 14 TikTok, &quot;Policy Initiatives and Compliance in Sixty Seconds.&quot; Embeds here once published. The lesson below stands on its own.]</p>
+<h2>The concept</h2>
+<p>When 1 policy is not enough, you bundle them. An <strong>initiative</strong>, also called a policy set definition, groups many policy definitions so you can assign them all at once. Instead of creating 30 separate assignments for a regulatory framework, you assign 1 initiative.</p>
+<p>The classic example is the built-in <strong>HIPAA HITRUST 9.2</strong> initiative, which bundles dozens of definitions covering encryption, logging, access control, and network protections. Assign it at a management group and every subscription underneath inherits the whole framework in 1 step.</p>
+<p>Once policies are assigned, the <strong>compliance dashboard</strong> (Policy, Compliance) becomes your control tower. It shows, per assignment:</p>
+<ul><li>How many resources are compliant versus non-compliant.</li><li>Which definitions failed and on which resources.</li><li>The reason for each failure, so you can fix the resource or fix the rule.</li></ul>
+<p>For DeployIfNotExists and Modify policies, flagging is not enough: something has to make the change. That is the <strong>remediation task</strong>. You create it from Policy, Remediation, scoped to the non-compliant resources. The assignment&#x27;s managed identity performs the fix, so it needs write permission on the scope. Remediation tasks also re-run on a schedule to catch drift.</p>
+<p>1 more extension of the same model: <strong>Guest Configuration</strong> applies policy inside the virtual machine&#x27;s guest operating system, such as auditing password complexity settings on Windows or Linux. It uses policies, assignments, and compliance reporting exactly like everything else in this module.</p>
+<h2>Key vocabulary</h2>
+<ul><li><strong>Initiative (policy set definition)</strong>: a bundle of policy definitions assigned as 1 unit.</li><li><strong>Compliance state</strong>: whether a resource meets its assigned policies: compliant or non-compliant.</li><li><strong>Remediation task</strong>: a job that brings non-compliant resources back into compliance for DeployIfNotExists and Modify policies.</li><li><strong>Guest Configuration</strong>: policy that audits settings inside the VM guest OS.</li></ul>
+<h2>Try it</h2>
+<p>You need any Azure account, including a free 1. This lab is read only. Nothing is created or changed.</p>
+<p><strong>In the portal:</strong></p>
+<ol><li>Open <strong>Policy</strong>, then under <strong>Authoring</strong> open <strong>Initiatives</strong>.</li><li>Search for &quot;HIPAA HITRUST&quot; and open the initiative. Scroll through the grouped policy definitions and note how many 1 assignment covers.</li><li>Go to <strong>Compliance</strong> in the left menu. Open any assignment to see compliant versus non-compliant counts and drill into a resource to read the failure reason.</li></ol>
+<p><strong>In the CLI (Cloud Shell is fine):</strong></p>
+<ol><li>List initiatives matching a framework: <code>az policy set-definition list --query &quot;[?contains(displayName,&#x27;HIPAA&#x27;)].displayName&quot; --output tsv</code></li></ol>
+<p><strong>Clean up:</strong> nothing was created or changed.</p>
+<h2>Worked example: Meridian Health</h2>
+<p>Meridian&#x27;s auditors require HIPAA HITRUST controls across the whole estate. Instead of 30 assignments, the cloud team assigns the HIPAA HITRUST 9.2 initiative once, at the management group above all Meridian subscriptions.</p>
+<p>The next morning the compliance dashboard shows 4 storage accounts allowing public blob access. The team opens the failing definition, confirms the finding, and creates a remediation task for the related DeployIfNotExists policy that turns on the required protection. 1 assignment, 1 dashboard, 1 remediation pass: that is the initiative workflow the exam wants you to picture.</p>
+<h2>Check your understanding</h2>
+<ol><li>Why would you assign an initiative instead of 30 separate policy assignments?</li><li>Where do you see exactly which resources violate a policy, and why?</li><li>Before a remediation task can fix resources, what must the assignment&#x27;s managed identity have?</li><li>True or false: Guest Configuration checks settings inside the virtual machine&#x27;s operating system.</li></ol>
+<h2>Exam tip</h2>
+<p>Initiative questions use phrases like &quot;regulatory framework,&quot; &quot;many related policies,&quot; or &quot;single assignment.&quot; If the scenario names HIPAA, NIST, PCI, or ISO, think initiative first. Remediation questions hinge on 2 facts: only DeployIfNotExists and Modify need remediation tasks, and the managed identity needs write access to do the work.</p>
+<h2>Key takeaways</h2>
+<ul><li>An initiative bundles many policy definitions into 1 assignable unit.</li><li>Assign frameworks like HIPAA HITRUST once at a management group to cover all subscriptions below.</li><li>The compliance dashboard shows what is non-compliant, where, and why.</li><li>Remediation tasks fix drift for DeployIfNotExists and Modify policies; the managed identity needs write permission.</li><li>Guest Configuration extends the policy model inside the VM guest OS.</li></ul>
+</body></html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Day 3: Azure Management Groups</title><style>body{font-family:sans-serif;max-width:800px;margin:2em auto;padding:0 1em;line-height:1.6}table{border-collapse:collapse;margin:1em 0}th,td{border:1px solid #999;padding:6px 10px;text-align:left}pre{background:#f4f4f4;padding:1em;overflow-x:auto}</style></head><body>
+<p>Module 1: Identity and Governance | AZ-104 Domain: Manage Azure identities and governance (20-25%)</p>
+<h2>Watch (60 seconds)</h2>
+<p>[Video slot: Day 3 TikTok, &quot;Azure Management Groups in Sixty Seconds.&quot; Embeds here once published. The lesson below stands on its own.]</p>
+<h2>The concept</h2>
+<p>Management groups are containers for subscriptions. They exist for 1 reason: governance at scale. Instead of assigning the same policy or role 50 times across 50 subscriptions, you assign it once at a management group and everything underneath inherits it.</p>
+<p>The hierarchy:</p>
+<ol><li><strong>Tenant Root Group</strong>: every Entra tenant has exactly 1. Every subscription lives under it unless you move it into a child management group.</li><li><strong>Child management groups</strong>: you create these, up to 6 levels deep (the root plus 5 levels below it).</li><li><strong>Subscriptions</strong>: sit under the root group or under any child group.</li><li>Below subscriptions, the usual resource groups and resources.</li></ol>
+<p>2 rules the exam tests constantly:</p>
+<ul><li><strong>Inheritance flows down.</strong> A policy or role assignment at a management group applies to every subscription, resource group, and resource beneath it. You cannot block inheritance for a child scope.</li><li><strong>The management group ID is immutable.</strong> You set it at creation and can never change it. The display name can change, the ID cannot. Pick IDs carefully: lowercase, no spaces, something like <code>mg-meridian-prod</code>.</li></ul>
+<p>Practical limits worth knowing: up to 10,000 management groups per tenant. Moving a subscription between management groups is allowed and does not move or rename any resources inside it.</p>
+<p>The classic enterprise pattern is the landing zone: a root management group for the company, child groups for production and non-production, and subscriptions under each. 1 &quot;allowed regions&quot; policy at the top controls every subscription below.</p>
+<h2>Key vocabulary</h2>
+<ul><li><strong>Management group</strong>: a container for subscriptions that lets you apply governance once and inherit it everywhere below.</li><li><strong>Tenant Root Group</strong>: the top level management group every tenant has. All subscriptions start under it.</li><li><strong>Inheritance</strong>: policies and role assignments flow down the hierarchy and cannot be blocked by a child scope.</li><li><strong>Scope</strong>: the level where a policy or role assignment applies: management group, subscription, resource group, or resource.</li><li><strong>Management group ID</strong>: the unique identifier set at creation. It can never be changed.</li></ul>
+<h2>Try it</h2>
+<p>Creating a management group is free. In most tenants you can create 1; if the create option is disabled, you need the Management Group Contributor role on the tenant root group.</p>
+<p><strong>In the portal:</strong></p>
+<ol><li>Search for <strong>Management groups</strong> and open it. Study the hierarchy: Tenant Root Group at the top, your subscriptions beneath it.</li><li>Click <strong>Create</strong>. Enter a management group ID you will never need to change, for example <code>mg-lab-01</code>, and a display name like <code>Lab MG 01</code>. Submit and watch it appear in the tree.</li></ol>
+<p><strong>In the CLI (Cloud Shell is fine):</strong></p>
+<ol><li>List the hierarchy: <code>az account management-group list --output table</code>.</li><li>Create 1: <code>az account management-group create --name mg-lab-02 --display-name &quot;Lab MG 02&quot;</code>.</li><li>Verify it shows up in the portal tree, then clean up: <code>az account management-group delete --name mg-lab-02</code>. Delete the portal 1 too from its Overview page.</li></ol>
+<p><strong>Clean up:</strong> delete both lab management groups. Nothing billable was created.</p>
+<h2>Worked example: Meridian Health</h2>
+<p>Meridian Health outgrows a single subscription and builds a hierarchy:</p>
+<ul><li>Tenant Root Group</li><li><code>mg-meridian</code> (display name &quot;Meridian Health&quot;)</li><li><code>mg-meridian-prod</code> → Meridian-Prod subscription</li><li><code>mg-meridian-devtest</code> → Meridian-DevTest subscription</li><li><code>mg-meridian-security</code> → Meridian-Security subscription</li></ul>
+<p>They assign an &quot;allowed locations: East US only&quot; policy at <code>mg-meridian-prod</code>. Every current and future subscription under it inherits the rule automatically. When a fourth subscription for a new clinic is added under <code>mg-meridian-prod</code> next quarter, the policy is already there. That is the whole point: govern once, inherit everywhere.</p>
+<h2>Check your understanding</h2>
+<ol><li>Every tenant has 1 of these at the top of the hierarchy. What is it?</li><li>You assign an Azure Policy at a management group. A new subscription is added under that group next month. Does the policy apply to it?</li><li>True or false: you can change a management group ID after creation.</li><li>How many levels deep can a management group hierarchy go?</li></ol>
+<h2>Exam tip</h2>
+<p>Inheritance is the entire reason management groups exist on this exam. Any question about applying 1 rule to many subscriptions is answered at the management group scope. And the immutable ID is a favorite trap: if a scenario renames a group and asks what breaks, the answer is nothing, because the ID (what Azure actually uses) never changes.</p>
+<h2>Key takeaways</h2>
+<ul><li>Management groups contain subscriptions and bring governance at scale through inheritance.</li><li>Every tenant has exactly 1 Tenant Root Group; hierarchies go 6 levels deep.</li><li>Policies and role assignments flow down and cannot be blocked by child scopes.</li><li>The management group ID is set at creation and can never change.</li><li>Moving a subscription between groups changes governance, not the resources inside.</li></ul>
+</body></html>

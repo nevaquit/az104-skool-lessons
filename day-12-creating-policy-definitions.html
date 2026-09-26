@@ -1,0 +1,30 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Day 12: Creating Policy Definitions</title><style>body{font-family:sans-serif;max-width:800px;margin:2em auto;padding:0 1em;line-height:1.6}table{border-collapse:collapse;margin:1em 0}th,td{border:1px solid #999;padding:6px 10px;text-align:left}pre{background:#f4f4f4;padding:1em;overflow-x:auto}</style></head><body>
+<p>Module 1: Identity and Governance | AZ-104 Domain: Manage Azure identities and governance (20-25%)</p>
+<h2>Watch (60 seconds)</h2>
+<p>[Video slot: Day 12 TikTok, &quot;Creating Policy Definitions in Sixty Seconds.&quot; Embeds here once published. The lesson below stands on its own.]</p>
+<h2>The concept</h2>
+<p>A policy definition is the rule itself, written in JSON. It has 2 halves that matter:</p>
+<ul><li><strong>The condition (if):</strong> what the rule looks at. This is a logical test against resource properties, such as &quot;the location field is not in the allowed list&quot; or &quot;the tags do not contain CostCenter.&quot;</li><li><strong>The effect (then):</strong> what happens when the condition is true. Deny, Audit, DeployIfNotExists, Modify, and the rest from Day 11.</li></ul>
+<p>A simplified definition reads like this: if the resource location is not in the allowed locations parameter, then deny.</p>
+<p>3 more building blocks:</p>
+<ul><li><strong>Parameters</strong> make 1 definition reusable. Instead of hardcoding the allowed regions, the definition declares a parameter called listOfAllowedLocations, and each assignment supplies its own values. Same rule, different regions per subscription.</li><li><strong>Mode</strong> controls what the rule evaluates. Mode &quot;all&quot; evaluates everything, including the resource group itself. Mode &quot;indexed&quot; skips resource groups and only evaluates the resources inside, which is faster and cheaper. Most built-in definitions use indexed.</li><li><strong>Aliases</strong> are friendly names for resource properties, such as the list of VM SKUs. You will see them inside built-in definitions.</li></ul>
+<p>Built-in versus custom: Azure ships hundreds of built-in definitions covering common requirements (allowed locations, required tags, allowed SKUs, encryption). Create a custom definition only when no built-in fits. In the portal you build 1 under Policy, Authoring, Definitions, using the &quot;+ Policy definition&quot; button, or you write the JSON and import it.</p>
+<p>Critical point: creating a definition does nothing by itself. The rule only takes effect once it is assigned to a scope (Day 13).</p>
+<h2>Key vocabulary</h2>
+<ul><li><strong>policyRule</strong>: the if/then logic inside a definition.</li><li><strong>if / then</strong>: the condition block and the effect block of a policy rule.</li><li><strong>field</strong>: a resource property the rule tests, such as location, type, or tags.</li><li><strong>parameters</strong>: inputs that make a definition reusable; values are supplied at assignment time.</li><li><strong>mode</strong>: &quot;all&quot; evaluates resource groups too; &quot;indexed&quot; evaluates only resources.</li><li><strong>aliases</strong>: shorthand names for resource properties used in rules.</li></ul>
+<h2>Try it</h2>
+<p>You need any Azure account, including a free 1. This lab is read only. Nothing is created or changed.</p>
+<p><strong>In the portal:</strong></p>
+<ol><li>Open <strong>Policy</strong>, then under <strong>Authoring</strong> open <strong>Definitions</strong>.</li><li>Search for &quot;Require a tag on resource groups&quot; and open it.</li><li>Select <strong>View definition</strong> to see the JSON. Find the &quot;policyRule&quot; section and the &quot;then&quot; block that holds the effect.</li><li>Find the &quot;parameters&quot; section. Notice the tag name is a parameter, not hardcoded. That value gets filled in when the definition is assigned.</li></ol>
+<p><strong>In the CLI (Cloud Shell is fine):</strong></p>
+<ol><li>Show 1 built-in definition&#x27;s name and mode: <code>az policy definition list --query &quot;[?displayName==&#x27;Require a tag on resource groups&#x27;].{Name:name, Mode:mode}&quot; --output table</code></li></ol>
+<p><strong>Clean up:</strong> nothing was created or changed.</p>
+<h2>Worked example: Meridian Health</h2>
+<p>Meridian&#x27;s finance team requires a CostCenter tag on every resource group for chargeback. The built-in &quot;Require a tag on resource groups&quot; is close but the team wants the tag name pre-filled and a custom description for auditors. The cloud admin clones the built-in into a custom definition, sets the default tag name parameter to CostCenter, and saves it. The definition sits idle until tomorrow, when it gets assigned (Day 13). Definition first, assignment second, always in that order.</p>
+<h2>Check your understanding</h2>
+<ol><li>What are the 2 parts of a policyRule, and what does each do?</li><li>A definition declares a parameter for allowed locations. Where do the actual values come from?</li><li>When would you choose mode &quot;indexed&quot; instead of mode &quot;all&quot;?</li><li>True or false: creating a definition immediately starts enforcing the rule.</li></ol>
+<h2>Exam tip</h2>
+<p>The exam tests the difference between a definition and an assignment far more than JSON authoring. If a question asks where the rule is written, that is the definition. If it asks where the rule applies, that is the assignment. You will not be asked to write policy JSON from memory.</p>
+<h2>Key takeaways</h2>
+<ul><li>A definition is JSON with an if (condition) and a then (effect).</li><li>Parameters make definitions reusable; assignments supply the values.</li><li>Mode &quot;indexed&quot; skips resource groups and is the common choice; mode &quot;all&quot; evaluates everything.</li><li>Prefer built-in definitions; go custom only when nothing fits.</li><li>A definition enforces nothing until it is assigned to a scope.</li></ul>
+</body></html>

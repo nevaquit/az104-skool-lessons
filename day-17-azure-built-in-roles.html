@@ -1,0 +1,31 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Day 17: Azure Built-in Roles (Owner, Contributor, Reader)</title><style>body{font-family:sans-serif;max-width:800px;margin:2em auto;padding:0 1em;line-height:1.6}table{border-collapse:collapse;margin:1em 0}th,td{border:1px solid #999;padding:6px 10px;text-align:left}pre{background:#f4f4f4;padding:1em;overflow-x:auto}</style></head><body>
+<p>Module 1: Identity and Governance | AZ-104 Domain: Manage Azure identities and governance (20-25%)</p>
+<h2>Watch (60 seconds)</h2>
+<p>[Video slot: Day 17 TikTok, &quot;Azure Built-in Roles (Owner, Contributor, Reader) in Sixty Seconds.&quot; Embeds here once published. The lesson below stands on its own.]</p>
+<h2>The concept</h2>
+<p>Azure ships more than 100 built-in roles, but 4 of them carry most of the exam weight:</p>
+<ul><li><strong>Owner</strong>: full access to everything, including managing access for others. Can assign roles and manage locks.</li><li><strong>Contributor</strong>: full access to manage resources, except managing access. Cannot assign roles to others and cannot manage locks.</li><li><strong>Reader</strong>: view everything, change nothing. Cannot view secrets; for example, cannot read storage account keys.</li><li><strong>User Access Administrator</strong>: manage access only. Can assign roles but cannot manage resources.</li></ul>
+<p>The Contributor versus Owner distinction is the single most tested role fact: the only practical difference is the authorization permission. If a scenario says &quot;must be able to grant access to others,&quot; Contributor is wrong and Owner (or User Access Administrator) is right.</p>
+<p>Then comes the plane distinction:</p>
+<ul><li><strong>Management plane</strong>: managing the resource itself: creating it, changing settings, reading keys. Contributor operates here.</li><li><strong>Data plane</strong>: working with the data inside: reading blobs, querying tables, accessing files. This needs <strong>DataActions</strong>, which Contributor does not have. A Contributor who opens a storage account in the portal and tries to browse blobs gets an authorization error. Data access needs data roles such as Storage Blob Data Contributor or Storage Blob Data Reader.</li></ul>
+<p>Beyond the big 4, learn the pattern, not the list: service-specific roles like Virtual Machine Contributor or Website Contributor narrow the blast radius. Always pick the narrowest built-in that fits before building a custom role (Day 18).</p>
+<h2>Key vocabulary</h2>
+<ul><li><strong>Management plane</strong>: operations on the resource itself, covered by Actions.</li><li><strong>Data plane</strong>: operations on the data inside the resource, covered by DataActions.</li><li><strong>DataActions</strong>: the permission set for data access, held by data roles, not by Contributor.</li><li><strong>Least privilege</strong>: granting only the permissions the job needs, nothing more.</li></ul>
+<h2>Try it</h2>
+<p>You need any Azure account, including a free 1. This lab is read only. Nothing is created or changed.</p>
+<p><strong>In the portal:</strong></p>
+<ol><li>Open any scope, then <strong>Access control (IAM)</strong>, then the <strong>Roles</strong> tab.</li><li>Open <strong>Owner</strong>, <strong>Contributor</strong>, and <strong>Reader</strong> 1 at a time and view each permissions JSON. Compare them, especially the NotActions that carve Contributor down from Owner.</li><li>Search for &quot;Storage Blob Data&quot; and open <strong>Storage Blob Data Contributor</strong>. Notice it grants DataActions instead of Actions: this role reads blobs but cannot manage the storage account.</li></ol>
+<p><strong>In the CLI (Cloud Shell is fine):</strong></p>
+<ol><li>Compare the 3 core roles: <code>az role definition list --query &quot;[?roleName==&#x27;Owner&#x27; || roleName==&#x27;Contributor&#x27; || roleName==&#x27;Reader&#x27;].{Role:roleName, Description:description}&quot; --output table</code></li></ol>
+<p><strong>Clean up:</strong> nothing was created or changed.</p>
+<h2>Worked example: Meridian Health</h2>
+<p>Meridian assigns the big 4 with intent:</p>
+<ul><li><strong>2 senior admins:</strong> Owner at the management group, eligible through PIM rather than permanent.</li><li><strong>Platform team:</strong> Contributor on Meridian-Prod. They manage everything in production but cannot grant access, so access reviews stay with the senior admins.</li><li><strong>Auditors:</strong> Reader on both subscriptions. Full visibility, zero change ability.</li><li><strong>Analytics team:</strong> Storage Blob Data Reader on the data lake storage account. They can read the research blobs but cannot change the account, rotate keys, or see anything outside that account.</li></ul>
+<p>The analytics assignment is the lesson: the team needed data access, not resource management, so a data role was the least-privilege answer.</p>
+<h2>Check your understanding</h2>
+<ol><li>Which roles can assign access to other users, and what permission makes that possible?</li><li>A Contributor opens a storage account and cannot browse its blobs. Why?</li><li>What is the narrowest built-in role for someone who only needs to view dashboards and costs?</li><li>True or false: Reader can restart a virtual machine.</li></ol>
+<h2>Exam tip</h2>
+<p>&quot;Manage access&quot; or &quot;grant permissions to others&quot; means Owner or User Access Administrator, never Contributor. Data access questions always hinge on DataActions: if the scenario involves reading blobs, files, or tables, reach for a data role. When in doubt between 2 roles, the exam rewards the narrower 1.</p>
+<h2>Key takeaways</h2>
+<ul><li>Owner manages everything including access; Contributor manages everything except access; Reader views only.</li><li>Only Owner and User Access Administrator can assign roles and manage locks.</li><li>Contributor covers the management plane; data access needs DataActions roles like Storage Blob Data Contributor.</li><li>Pick the narrowest built-in role that fits before creating a custom role.</li><li>Least privilege is the lens for every role question on the exam.</li></ul>
+</body></html>

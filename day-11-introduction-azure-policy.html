@@ -1,0 +1,31 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Day 11: Introduction to Azure Policy</title><style>body{font-family:sans-serif;max-width:800px;margin:2em auto;padding:0 1em;line-height:1.6}table{border-collapse:collapse;margin:1em 0}th,td{border:1px solid #999;padding:6px 10px;text-align:left}pre{background:#f4f4f4;padding:1em;overflow-x:auto}</style></head><body>
+<p>Module 1: Identity and Governance | AZ-104 Domain: Manage Azure identities and governance (20-25%)</p>
+<h2>Watch (60 seconds)</h2>
+<p>[Video slot: Day 11 TikTok, &quot;Introduction to Azure Policy in Sixty Seconds.&quot; Embeds here once published. The lesson below stands on its own.]</p>
+<h2>The concept</h2>
+<p>Azure Policy is how you control what resources are allowed to exist in your environment. It answers a different question than RBAC. RBAC answers &quot;who can do what.&quot; Policy answers &quot;what is allowed to exist, and in what shape.&quot;</p>
+<p>It works in 2 parts:</p>
+<ol><li><strong>A policy definition</strong>: the rule itself. For example: &quot;storage accounts must not allow public blob access&quot; or &quot;virtual machines may only use approved SKUs.&quot;</li><li><strong>A policy assignment</strong>: applying that rule to a scope. Assignments can target a management group, a subscription, or a resource group.</li></ol>
+<p>Once assigned, Azure evaluates every new or changed resource against the policy. Resources that already exist are picked up by a periodic compliance scan. Anything that breaks the rule is reported on the compliance dashboard, and depending on the effect you chose, it is blocked or just flagged.</p>
+<p>The effects you will see on the exam:</p>
+<ul><li><strong>Deny</strong>: blocks the creation or update. The deployment fails with a policy error.</li><li><strong>Audit</strong>: allows the resource but flags it as non-compliant.</li><li><strong>AuditIfNotExists</strong>: audits when a related resource is missing (for example, no diagnostic settings on a VM).</li><li><strong>DeployIfNotExists</strong>: deploys the missing piece automatically (for example, installs an agent).</li><li><strong>Modify</strong>: adds or changes properties, such as adding a required tag.</li><li><strong>Disabled</strong>: the definition is turned off.</li></ul>
+<p>1 line to lock in: policy never grants access. A user with the Owner role who hits a Deny policy is still blocked, because RBAC and Policy control 2 different things.</p>
+<h2>Key vocabulary</h2>
+<ul><li><strong>Policy definition</strong>: the rule, written in JSON. Defines the condition and the effect.</li><li><strong>Assignment</strong>: applying a definition to a scope so it takes effect.</li><li><strong>Scope</strong>: where a policy applies: management group, subscription, or resource group.</li><li><strong>Effect</strong>: what happens on a violation: Deny, Audit, AuditIfNotExists, DeployIfNotExists, Modify, or Disabled.</li><li><strong>Initiative</strong>: a bundle of policy definitions assigned as 1 unit (Day 14).</li><li><strong>Compliance</strong>: the measured state of your resources against assigned policies.</li><li><strong>Remediation</strong>: bringing non-compliant resources back into compliance (Day 14).</li></ul>
+<h2>Try it</h2>
+<p>You need any Azure account, including a free 1. This lab is read only. Nothing is created or changed.</p>
+<p><strong>In the portal:</strong></p>
+<ol><li>Search for <strong>Policy</strong> and open it.</li><li>Under <strong>Authoring</strong>, open <strong>Definitions</strong>. In the search box, type &quot;Allowed locations&quot; and open the built-in definition. Read the description and note the parameters it asks for.</li><li>Go to <strong>Compliance</strong> in the left menu. This dashboard shows compliant versus non-compliant resources for every assignment. Open any assignment to see the breakdown.</li></ol>
+<p><strong>In the CLI (Cloud Shell is fine):</strong></p>
+<ol><li>List built-in definitions matching a keyword: <code>az policy definition list --query &quot;[?contains(displayName,&#x27;Allowed locations&#x27;)].{Display:displayName, Mode:mode}&quot; --output table</code></li><li>List current assignments in your subscription: <code>az policy assignment list --query &quot;[].{Name:name, Scope:scope}&quot; --output table</code></li></ol>
+<p><strong>Clean up:</strong> nothing was created or changed.</p>
+<h2>Worked example: Meridian Health</h2>
+<p>Meridian Health must keep patient data in 1 Azure region for compliance. The cloud team assigns the built-in &quot;Allowed locations&quot; policy with a Deny effect at the Meridian-Prod subscription scope.</p>
+<p>A developer with the Contributor role tries to create a storage account in a different region. RBAC says yes: Contributors can create storage accounts. Policy says no: the location is not allowed. The deployment fails with a policy violation error. This is the exam pattern in real life: RBAC controls who acts, Policy controls what may exist, and neither 1 overrides the other.</p>
+<h2>Check your understanding</h2>
+<ol><li>A developer with the Owner role tries to create a resource that violates a Deny policy. What happens?</li><li>Which 3 scopes can a policy assignment target?</li><li>You want to flag non-compliant resources without blocking anyone. Which effect do you use?</li><li>True or false: assigning a policy grants users access to resources.</li></ol>
+<h2>Exam tip</h2>
+<p>Any question containing &quot;prevent anyone from creating,&quot; &quot;ensure all resources comply,&quot; or &quot;block deployments that&quot; points to Azure Policy, usually with a Deny effect. If the question is about who may manage or view resources, that is RBAC instead. The exam loves making you choose between the 2.</p>
+<h2>Key takeaways</h2>
+<ul><li>Azure Policy controls what resources may exist; RBAC controls who may act.</li><li>A definition is the rule; an assignment applies it to a management group, subscription, or resource group.</li><li>New and changed resources are evaluated immediately; existing resources are caught by the compliance scan.</li><li>Know the effects: Deny blocks, Audit flags, DeployIfNotExists and Modify fix, Disabled turns off.</li><li>Policy never grants access, and a Deny policy stops even an Owner.</li></ul>
+</body></html>

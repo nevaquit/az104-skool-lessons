@@ -1,0 +1,31 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Day 1: Introduction to AZ-104 and Azure Administrator Role</title><style>body{font-family:sans-serif;max-width:800px;margin:2em auto;padding:0 1em;line-height:1.6}table{border-collapse:collapse;margin:1em 0}th,td{border:1px solid #999;padding:6px 10px;text-align:left}pre{background:#f4f4f4;padding:1em;overflow-x:auto}</style></head><body>
+<p>Module 0: Start Here | AZ-104 Domain: exam overview and study strategy</p>
+<h2>Watch (60 seconds)</h2>
+<p>[Video slot: Day 1 TikTok, &quot;Introduction to AZ-104 and Azure Administrator Role in Sixty Seconds.&quot; Embeds here once published. The lesson below stands on its own.]</p>
+<h2>The concept</h2>
+<p>AZ-104 is the Microsoft Certified: Azure Administrator Associate exam. Passing it proves you can run real Azure environments: identities, governance, storage, compute resources, virtual networks, and monitoring.</p>
+<p>The exam at a glance:</p>
+<ul><li>About 40 to 60 questions: multiple choice, case studies, drag and drop, and hot area questions</li><li>120 minutes</li><li>Passing score: 700 out of 1000 (a scaled score, not a flat 70 percent)</li><li>Cost: about 165 US dollars</li><li>No official prerequisites, but you will struggle without hands-on time in the portal and the command line</li></ul>
+<p>The 5 domains and their weights:</p>
+<ol><li>Manage Azure identities and governance: 20 to 25 percent</li><li>Implement and manage storage: 15 to 20 percent</li><li>Deploy and manage Azure compute resources: 20 to 25 percent</li><li>Implement and manage virtual networking: 15 to 20 percent</li><li>Monitor and maintain Azure resources: 10 to 15 percent</li></ol>
+<p>Identity and compute carry the most weight. Monitoring carries the least, but it still decides pass or fail for many candidates.</p>
+<p>The Azure administrator role in real life: you provision and manage identities in Microsoft Entra ID, enforce governance with policy and role assignments, deploy storage and compute, build virtual networks, and keep everything healthy with monitoring and backup. You work in the portal, the Azure CLI, and PowerShell. The exam tests all 3 paths, so this course teaches all 3.</p>
+<p>How this course works: 365 days, 1 topic per day. Each day has a 60 second TikTok video, this full lesson, and a hands-on lab. Watch the video, read the lesson, do the lab in your own free Azure account, then answer the check questions. Small daily reps beat weekend cramming.</p>
+<h2>Key vocabulary</h2>
+<ul><li><strong>AZ-104</strong>: the Microsoft Certified: Azure Administrator Associate exam.</li><li><strong>Microsoft Entra ID</strong>: Microsoft&#x27;s cloud identity service (formerly Azure Active Directory). You will see both names on the exam.</li><li><strong>Azure portal</strong>: the web console at portal.azure.com.</li><li><strong>Azure CLI</strong>: the cross platform command line tool (<code>az</code>). Tested heavily on the exam.</li><li><strong>Cloud Shell</strong>: a free browser based shell in the portal with the Azure CLI and PowerShell preinstalled.</li><li><strong>Scaled score</strong>: the 1000 point scoring scale. 700 to pass does not mean 70 percent of questions answered correctly.</li></ul>
+<h2>Try it</h2>
+<p>You need a free Azure account. Create 1 on the Azure free account page if you do not have 1. It includes credits for the first 30 days plus services that stay free for 12 months and longer.</p>
+<p><strong>In the portal:</strong></p>
+<ol><li>Sign in at portal.azure.com. Use the top search bar: type &quot;Subscriptions&quot; and open it. This search bar is the fastest way to reach any service, and the exam assumes you know it.</li><li>Open <strong>Cloud Shell</strong> from the top toolbar (the <code>&gt;_</code> icon). Choose Bash or PowerShell when asked and accept the free storage it requests. Cloud Shell itself is free.</li><li>In Cloud Shell, run <code>az --version</code> to confirm the CLI works.</li></ol>
+<p><strong>In the CLI (Cloud Shell):</strong></p>
+<ol><li>List what you can access: <code>az account list --output table</code>. Note the subscription name and which 1 is the default.</li><li>Show the current subscription details: <code>az account show --query &quot;{name:name, state:state}&quot; --output table</code>.</li></ol>
+<p><strong>Clean up:</strong> nothing billable was created. Cloud Shell storage is free.</p>
+<h2>Worked example: Meridian Health</h2>
+<p>Meridian Health hires Amara as their first Azure administrator. Her first week plan follows this course exactly: she creates her free account, learns the portal search bar and Cloud Shell on Day 1, then works through 1 governance topic per day. By Day 40 she can whiteboard the full identity and governance model for her manager. Her rule: never skip the lab. The exam tests what you can do, not what you have read.</p>
+<h2>Check your understanding</h2>
+<ol><li>What are the 5 AZ-104 domains, and which 2 carry the most weight?</li><li>What is the passing score, and why is it not the same as answering 70 percent of questions correctly?</li><li>Name 3 tools an Azure administrator uses daily.</li><li>True or false: you need a paid Azure subscription to follow this course.</li></ol>
+<h2>Exam tip</h2>
+<p>AZ-104 tests doing, not memorizing. For every service in this course, learn 2 paths: the portal clicks and the command line. Questions often describe a goal and ask for the fastest way or the least privilege way to reach it. When 2 answers both work, pick the 1 with fewer steps and lower permissions.</p>
+<h2>Key takeaways</h2>
+<ul><li>AZ-104 certifies the Azure Administrator Associate role: about 40 to 60 questions, 120 minutes, 700 out of 1000 to pass.</li><li>The 5 domains: identity and governance (20 to 25 percent), storage (15 to 20 percent), compute (20 to 25 percent), networking (15 to 20 percent), monitoring (10 to 15 percent).</li><li>Daily reps win: 1 60 second video, 1 lesson, 1 lab, every day.</li><li>Get a free Azure account and learn the portal search bar and Cloud Shell on Day 1.</li></ul>
+</body></html>

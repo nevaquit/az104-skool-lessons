@@ -1,0 +1,31 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Day 16: Comparing RBAC vs. Azure Policy</title><style>body{font-family:sans-serif;max-width:800px;margin:2em auto;padding:0 1em;line-height:1.6}table{border-collapse:collapse;margin:1em 0}th,td{border:1px solid #999;padding:6px 10px;text-align:left}pre{background:#f4f4f4;padding:1em;overflow-x:auto}</style></head><body>
+<p>Module 1: Identity and Governance | AZ-104 Domain: Manage Azure identities and governance (20-25%)</p>
+<h2>Watch (60 seconds)</h2>
+<p>[Video slot: Day 16 TikTok, &quot;Comparing RBAC vs. Azure Policy in Sixty Seconds.&quot; Embeds here once published. The lesson below stands on its own.]</p>
+<h2>The concept</h2>
+<p>RBAC and Azure Policy are the 2 governance controls the exam forces you to choose between, and they answer different questions:</p>
+<ul><li><strong>RBAC: who can do what.</strong> It controls the actions of identities. &quot;Can Alice restart this VM?&quot; is an RBAC question.</li><li><strong>Azure Policy: what may exist.</strong> It controls the properties of resources, no matter who creates them. &quot;Can any VM run without disk encryption?&quot; is a Policy question.</li></ul>
+<p>They do not override each other because they govern different things. An Owner with full RBAC rights is still blocked by a Deny policy. A perfectly compliant resource is still invisible to a user with no role assignment.</p>
+<p>There is a third control to complete the picture: <strong>resource locks</strong>. A ReadOnly lock blocks all changes; a CanNotDelete lock blocks deletion. Locks apply to everyone, including Owners. Only the Owner and User Access Administrator roles can create or remove locks. Locks are the answer whenever the requirement is &quot;nobody may delete or change this, not even administrators.&quot;</p>
+<p>The decision table the exam is built on:</p>
+<table><thead><tr><th>Requirement</th><th>Control</th></tr></thead><tbody><tr><td>Let the support team restart VMs but change nothing else</td><td>RBAC (a narrow or custom role)</td></tr><tr><td>No storage account may allow public blob access</td><td>Azure Policy (Deny effect)</td></tr><tr><td>Nobody may delete the production database, including admins</td><td>Resource lock (CanNotDelete)</td></tr><tr><td>Every resource group needs a CostCenter tag</td><td>Azure Policy (Modify or Deny effect)</td></tr><tr><td>Each department gets its own invoice</td><td>Separate subscriptions (Day 2)</td></tr></tbody></table>
+<p>Read the requirement, name the thing being controlled (an identity&#x27;s actions, a resource&#x27;s properties, or deletion itself), and the answer follows.</p>
+<h2>Key vocabulary</h2>
+<ul><li><strong>Allow model</strong>: RBAC grants permissions; everything not granted is denied. There is no user-created deny.</li><li><strong>Additive permissions</strong>: a user gets the union of all their role assignments.</li><li><strong>Deny effect</strong>: the policy effect that blocks non-compliant deployments.</li><li><strong>Resource lock</strong>: ReadOnly or CanNotDelete; blocks changes or deletion for everyone including Owners.</li></ul>
+<h2>Try it</h2>
+<p>You need any Azure account, including a free 1. This lab is read only. Nothing is created or changed.</p>
+<p><strong>In the portal:</strong></p>
+<ol><li>Open any resource group, then <strong>Access control (IAM)</strong>. This blade answers &quot;who&quot;: principals, roles, scopes.</li><li>Open <strong>Policy</strong>, then <strong>Compliance</strong>. This blade answers &quot;what is allowed&quot;: definitions, assignments, violations.</li><li>Back in the resource group, open the <strong>Locks</strong> blade. Note the 2 lock types and read any existing lock&#x27;s notes. This blade answers &quot;what cannot be deleted or changed.&quot;</li></ol>
+<p><strong>In the CLI (Cloud Shell is fine):</strong></p>
+<ol><li>List locks in your subscription: <code>az lock list --output table</code></li></ol>
+<p><strong>Clean up:</strong> nothing was created or changed.</p>
+<h2>Worked example: Meridian Health</h2>
+<p>A platform team Owner tries to deploy a virtual machine using an unapproved image size. RBAC allows it: Owners can do anything. But Meridian assigned a policy with a Deny effect that restricts VM SKUs at the Meridian-Prod subscription. The deployment fails with a policy violation.</p>
+<p>Later, an auditor asks for proof that nobody can delete the audit log storage account, not even the senior admins. The team places a CanNotDelete lock on the storage account. Now even an Owner gets an error on delete. 2 different requirements, 2 different controls, and the team can explain exactly which 1 answers which question.</p>
+<h2>Check your understanding</h2>
+<ol><li>&quot;Prevent anyone from deleting the audit storage account, including Owners.&quot; Which control do you use?</li><li>&quot;Ensure every new virtual machine has disk encryption enabled.&quot; Which control do you use?</li><li>&quot;Let interns view costs and dashboards but change nothing.&quot; Which control do you use?</li><li>True or false: a Deny policy can stop an Owner, but a resource lock cannot.</li></ol>
+<h2>Exam tip</h2>
+<p>Memorize the 4-way mapping: who acts is RBAC, what may exist is Policy, what cannot be deleted or changed is a lock, and invoice separation is subscriptions. Exam questions are written so that exactly 1 of these fits the requirement sentence. Underline the verb: &quot;manage,&quot; &quot;create,&quot; &quot;prevent deletion,&quot; &quot;invoice.&quot;</p>
+<h2>Key takeaways</h2>
+<ul><li>RBAC governs identities and their actions; Policy governs resource properties; locks govern deletion and modification.</li><li>A Deny policy stops even an Owner; a lock stops everyone including Owners.</li><li>Only Owner and User Access Administrator can manage locks.</li><li>Match the control to the requirement: who, what may exist, or what cannot be removed.</li><li>Policy never grants access and RBAC never enforces resource properties.</li></ul>
+</body></html>

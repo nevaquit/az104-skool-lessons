@@ -1,0 +1,29 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Day 10: Azure Advisor for Cost Optimization</title><style>body{font-family:sans-serif;max-width:800px;margin:2em auto;padding:0 1em;line-height:1.6}table{border-collapse:collapse;margin:1em 0}th,td{border:1px solid #999;padding:6px 10px;text-align:left}pre{background:#f4f4f4;padding:1em;overflow-x:auto}</style></head><body>
+<p>Module 1: Identity and Governance | AZ-104 Domain: Manage Azure identities and governance (20-25%)</p>
+<h2>Watch (60 seconds)</h2>
+<p>[Video slot: Day 10 TikTok, &quot;Azure Advisor for Cost Optimization in Sixty Seconds.&quot; Embeds here once published. The lesson below stands on its own.]</p>
+<h2>The concept</h2>
+<p>Azure Advisor is a free personalized consultant built into the portal. It continuously analyzes your resources and produces recommendations in 5 categories:</p>
+<ol><li><strong>Cost</strong>: right-size or shut down underutilized VMs, delete unattached disks, remove idle ExpressRoute circuits, VPN gateways, and application gateways.</li><li><strong>Security</strong>: powered by Microsoft Defender for Cloud findings.</li><li><strong>Reliability</strong>: availability best practices, like using availability zones.</li><li><strong>Operational Excellence</strong>: management best practices.</li><li><strong>Performance</strong>: SKU and configuration upgrades that improve speed.</li></ol>
+<p>Each recommendation names the affected resources, explains the issue, and shows the estimated savings, usually as an annual dollar figure. You can also postpone or dismiss recommendations that do not fit.</p>
+<p>2 facts the exam cares about:</p>
+<ul><li><strong>Advisor recommends. You decide.</strong> Nothing is applied automatically. &quot;Advisor will shut down the VM for you&quot; is always the wrong answer.</li><li><strong>Advisor is free.</strong> There is no per recommendation charge and no setup beyond opening the blade.</li></ul>
+<p>The typical cost wins: a VM averaging 5 percent CPU gets flagged for rightsizing (a D4s becomes a B2s), unattached managed disks from deleted VMs get flagged for deletion, and idle gateways get flagged for removal. Advisor also keeps an <strong>Advisor Score</strong> per subscription so you can track improvement over time, and it can send scheduled <strong>digest</strong> emails of new recommendations.</p>
+<h2>Key vocabulary</h2>
+<ul><li><strong>Azure Advisor</strong>: the free built-in recommendation engine for cost, security, reliability, operational excellence, and performance.</li><li><strong>Recommendation</strong>: 1 suggested action, with affected resources and estimated savings.</li><li><strong>Estimated savings</strong>: the projected annual dollar savings if you apply a cost recommendation.</li><li><strong>Advisor Score</strong>: a per subscription score tracking how many recommendations you have addressed.</li><li><strong>Digest</strong>: a scheduled email summary of new Advisor recommendations.</li></ul>
+<h2>Try it</h2>
+<p>Read only. Nothing changes and nothing is billed.</p>
+<p><strong>In the portal:</strong></p>
+<ol><li>Search for <strong>Advisor</strong> and open it. Note the 5 category tabs and your Advisor Score.</li><li>Open the <strong>Cost</strong> tab. Open 1 recommendation, for example &quot;Right-size or shutdown underutilized virtual machines.&quot; Read the affected resources, the recommended action, and the estimated annual savings.</li><li>Open a second recommendation type, for example unattached disks, and note the difference: rightsizing changes a running resource, disk deletion removes waste outright.</li></ol>
+<p><strong>In the CLI (Cloud Shell is fine):</strong></p>
+<ol><li>List current recommendations: <code>az advisor recommendation list --output table</code>.</li><li>Filter to cost recommendations: <code>az advisor recommendation list --query &quot;[?category==&#x27;Cost&#x27;].{name:name, impact:impact}&quot; --output table</code>.</li></ol>
+<p><strong>Clean up:</strong> nothing was changed. If you postponed or dismissed a recommendation while exploring, note that you can re-enable it from the recommendation&#x27;s menu.</p>
+<h2>Worked example: Meridian Health</h2>
+<p>Meridian&#x27;s monthly Advisor review takes 20 minutes. This month: 6 dev VMs averaging under 5 percent CPU get rightsized from D4s to B2s, saving an estimated 400 dollars a month. 12 unattached disks from VMs deleted last year are flagged; the team snapshots the 2 that might matter and deletes all 12. 1 idle VPN gateway from a finished migration gets removed. Total estimated annual savings: just over 9,000 dollars, found without a single spreadsheet.</p>
+<h2>Check your understanding</h2>
+<ol><li>Name the 5 Azure Advisor categories.</li><li>Advisor recommends shutting down an idle VM. Does it shut the VM down for you?</li><li>Which category flags unattached managed disks?</li><li>True or false: Azure Advisor charges per recommendation.</li></ol>
+<h2>Exam tip</h2>
+<p>2 Advisor facts answer most exam questions: recommendations are never applied automatically (the admin always acts), and the service is free. When a scenario asks for the cheapest way to find waste across a subscription, Advisor&#x27;s Cost tab beats manual auditing every time.</p>
+<h2>Key takeaways</h2>
+<ul><li>Azure Advisor gives free recommendations across cost, security, reliability, operational excellence, and performance.</li><li>Cost recommendations target underutilized VMs, unattached disks, and idle gateways, with estimated annual savings.</li><li>Advisor recommends; the administrator decides and applies. Nothing is automatic.</li><li>Track progress with the Advisor Score and digests.</li></ul>
+</body></html>

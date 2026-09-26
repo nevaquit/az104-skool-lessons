@@ -1,0 +1,33 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Day 32: Managing Devices in Entra ID</title><style>body{font-family:sans-serif;max-width:800px;margin:2em auto;padding:0 1em;line-height:1.6}table{border-collapse:collapse;margin:1em 0}th,td{border:1px solid #999;padding:6px 10px;text-align:left}pre{background:#f4f4f4;padding:1em;overflow-x:auto}</style></head><body>
+<p>Module 1: Identity and Governance | AZ-104 Domain: Manage Azure identities and governance (20-25%)</p>
+<h2>Watch (60 seconds)</h2>
+<p>[Video slot: Day 32 TikTok, &quot;Managing Devices in Entra ID in Sixty Seconds.&quot; Embeds here once published. The lesson below stands on its own.]</p>
+<h2>The concept</h2>
+<p>Devices get identity objects in Microsoft Entra ID so that access decisions can consider device health, not just user credentials. A sign-in from a compliant corporate laptop and a sign-in from an unknown phone stop looking the same to the system.</p>
+<p>There are 3 device states:</p>
+<ul><li><strong>Microsoft Entra registered:</strong> a personal device (phone, home laptop) where the user adds a work account. This is the BYOD state, sometimes called workplace join. Management is light.</li><li><strong>Microsoft Entra joined:</strong> a corporate device joined directly to the cloud directory. No on-premises Active Directory involved. Managed with Intune.</li><li><strong>Microsoft Entra hybrid joined:</strong> a device joined to on-premises Active Directory and also registered in Entra ID. The bridge state during migration (deep dive on Day 33).</li></ul>
+<p>You manage them in the Microsoft Entra admin center under <strong>Identity</strong> &gt; <strong>Devices</strong> &gt; <strong>All devices</strong>. The columns that matter:</p>
+<ul><li><strong>Join type:</strong> registered, Entra joined, or hybrid joined.</li><li><strong>Owner:</strong> who the device is registered to.</li><li><strong>MDM:</strong> which management tool owns it (Intune, or none).</li><li><strong>Compliant:</strong> whether it meets your compliance policies.</li></ul>
+<p>Device lifecycle actions: <strong>disable</strong> a device to block its access immediately (the move for a lost laptop), and <strong>delete</strong> stale device objects to keep the directory clean. Note the trap: a deleted device must re-register before it can get access again, so delete only devices that are truly retired.</p>
+<p>Why the exam cares: device objects are what make device-based Conditional Access possible. A policy that says &quot;require a compliant device&quot; can only work if the device has an identity and Intune has marked it compliant.</p>
+<h2>Key vocabulary</h2>
+<ul><li><strong>Device object</strong>: the identity record for a device in Entra ID.</li><li><strong>Microsoft Entra registered</strong>: BYOD state; user adds a work account to a personal device.</li><li><strong>Microsoft Entra joined</strong>: corporate device joined directly to the cloud directory.</li><li><strong>Microsoft Entra hybrid joined</strong>: device joined to on-premises AD and registered in Entra ID.</li><li><strong>MDM (Mobile Device Management)</strong>: Intune in the Microsoft world; enforces compliance and deploys apps.</li><li><strong>Compliance</strong>: the device meets your policies (encryption on, OS patched, PIN set).</li><li><strong>Stale device</strong>: a device object with no recent activity; a cleanup target.</li></ul>
+<h2>Try it</h2>
+<p>Read-only lab. Do not disable or delete any real device.</p>
+<p><strong>In the portal:</strong></p>
+<ol><li>Open the Microsoft Entra admin center and go to <strong>Identity</strong> &gt; <strong>Devices</strong> &gt; <strong>All devices</strong>. Compare the Join type column across devices.</li><li>Open 1 device and note its Device ID, join type, owner, MDM authority, and last activity timestamps.</li><li>Go to <strong>Identity</strong> &gt; <strong>Devices</strong> &gt; <strong>Device settings</strong> and check 2 settings: who is allowed to join devices to Entra ID, and whether users may register their personal devices.</li></ol>
+<p><strong>CLI alternative:</strong></p>
+<pre>az ad device list --query &quot;[].{Name:displayName, JoinType:trustType, Enabled:accountEnabled}&quot; --output table</pre>
+<p>The <code>trustType</code> values map to the portal states: Workplace means registered, AzureAd means Entra joined, ServerAd means hybrid joined.</p>
+<p><strong>Clean up:</strong> nothing was created or changed.</p>
+<h2>Worked example: Meridian Health</h2>
+<p>Meridian Health&#x27;s device picture:</p>
+<ul><li><strong>Corporate laptops:</strong> Entra joined, Intune managed, marked compliant. These satisfy the Conditional Access policy guarding the patient records app.</li><li><strong>Doctors&#x27; personal tablets:</strong> registered (BYOD). They get email and Teams, but the patient records app stays blocked because the devices are not compliant.</li><li><strong>Old imaging workstations:</strong> hybrid joined during the migration off on-premises AD.</li></ul>
+<p>When a nurse reports a lost laptop, the helpdesk disables its device object within minutes. The finder cannot get past the sign-in screen even with the correct password, because the device identity is disabled.</p>
+<h2>Check your understanding</h2>
+<ol><li>A doctor wants to read email on a personal phone. Which device state fits, and why not Entra joined?</li><li>What happens when you disable a device object in Entra ID?</li><li>Which tool marks a device as compliant so Conditional Access can trust it?</li><li>True or false: a hybrid joined device is joined to on-premises AD and registered in Entra ID.</li></ol>
+<h2>Exam tip</h2>
+<p>Match the device state to the scenario: BYOD and personal devices mean registered; corporate cloud-native devices mean Entra joined; migration from on-premises AD means hybrid joined. If a question says &quot;require a compliant device,&quot; the device must be Intune managed, because only Intune evaluates compliance.</p>
+<h2>Key takeaways</h2>
+<ul><li>Devices have identity objects in Entra ID in 3 states: registered, Entra joined, hybrid joined.</li><li>Device objects are what make device-based Conditional Access possible.</li><li>Disable blocks a lost device immediately; delete retires it permanently (it must re-register).</li><li>Intune owns compliance; only compliant devices satisfy &quot;require compliant device&quot; policies.</li></ul>
+</body></html>

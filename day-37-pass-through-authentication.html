@@ -1,0 +1,32 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Day 37: Pass-Through Authentication (PTA)</title><style>body{font-family:sans-serif;max-width:800px;margin:2em auto;padding:0 1em;line-height:1.6}table{border-collapse:collapse;margin:1em 0}th,td{border:1px solid #999;padding:6px 10px;text-align:left}pre{background:#f4f4f4;padding:1em;overflow-x:auto}</style></head><body>
+<p>Module 1: Identity and Governance | AZ-104 Domain: Manage Azure identities and governance (20-25%)</p>
+<h2>Watch (60 seconds)</h2>
+<p>[Video slot: Day 37 TikTok, &quot;Pass-Through Authentication (PTA) in Sixty Seconds.&quot; Embeds here once published. The lesson below stands on its own.]</p>
+<h2>The concept</h2>
+<p>Pass-through authentication is the second Entra Connect sign-in method, and it answers a different requirement than yesterday&#x27;s lesson. With PTA, the password is validated against on-premises Active Directory at the moment of sign-in. No password hash is stored in the cloud in any form.</p>
+<p>How it works: you install lightweight authentication agents on domain-joined servers inside your network (no inbound firewall holes needed; the agents make outbound connections only). When a user signs in to a cloud app, Entra ID hands the username and password to an agent, the agent validates them against a domain controller, and the result comes back. The whole exchange is encrypted.</p>
+<p>Why organizations choose it:</p>
+<ul><li><strong>No password material in the cloud.</strong> For some compliance regimes, that is the deciding factor.</li><li><strong>On-premises policies enforced everywhere.</strong> Account lockout, password complexity, and expiry rules from your on-premises domain apply to cloud sign-ins too, because the domain controller is doing the validating.</li><li><strong>Simple to deploy.</strong> No federation infrastructure, just agents.</li></ul>
+<p>What it demands in return:</p>
+<ul><li><strong>High availability is your job.</strong> Microsoft recommends at least 3 agents spread across servers. If the agents or the domain controllers are unreachable, cloud sign-in stops. Compare that with PHS, which keeps working through an outage.</li><li><strong>Plan the placement.</strong> Agents belong on dedicated, always-on, domain-joined servers, not on the domain controllers themselves.</li></ul>
+<p>PTA is commonly paired with Seamless SSO: inside the corporate network users get silent sign-on, and every validation still runs against on-premises AD.</p>
+<p>The 3 methods side by side, which is exactly how the exam frames it:</p>
+<table><thead><tr><th></th><th>PHS (Day 36)</th><th>PTA (this lesson)</th><th>Federation (AD FS)</th></tr></thead><tbody><tr><td>Where validated</td><td>Entra ID (cloud)</td><td>On-premises AD via agents</td><td>On-premises federation service</td></tr><tr><td>Password material in cloud</td><td>Salted hash</td><td>None</td><td>None</td></tr><tr><td>Survives on-premises outage</td><td>Yes</td><td>No</td><td>No</td></tr><tr><td>Complexity</td><td>Lowest</td><td>Low</td><td>Highest</td></tr></tbody></table>
+<h2>Key vocabulary</h2>
+<ul><li><strong>Pass-through authentication (PTA)</strong>: passwords validated against on-premises AD at sign-in; nothing stored in the cloud.</li><li><strong>Authentication agent</strong>: the lightweight service that carries validation requests to domain controllers.</li><li><strong>On-premises validation</strong>: the domain controller, not Entra ID, decides if the password is correct.</li></ul>
+<h2>Try it</h2>
+<p>Review-based lab plus a decision exercise. Nothing changes.</p>
+<p><strong>In the portal:</strong></p>
+<ol><li>Microsoft Entra admin center &gt; <strong>Identity</strong> &gt; <strong>Hybrid management</strong> &gt; <strong>Microsoft Entra Connect</strong>. Note whether pass-through authentication is enabled and how many agents report as healthy.</li><li>Compare against yesterday&#x27;s PHS notes: for your tenant, where would authentication happen during an on-premises internet outage?</li></ol>
+<p><strong>Decision exercise (on paper, this is the exam skill):</strong> choose PHS, PTA, or federation for each:</p>
+<ul><li>(a) Sign-in must keep working if the on-premises data center loses internet.</li><li>(b) The on-premises account lockout policy must apply to Microsoft 365 sign-ins.</li><li>(c) Corporate policy forbids any password-derived material in the cloud.</li></ul>
+<p><strong>Clean up:</strong> nothing was changed.</p>
+<h2>Worked example: Meridian Health</h2>
+<p>Meridian Health&#x27;s compliance team ruled that the on-premises lockout policy must apply to every sign-in, including cloud apps used by billing staff. So the billing department&#x27;s Entra Connect configuration uses PTA, with 3 agents installed across 2 hospital data centers. During a planned Active Directory maintenance window, the team posts a notice: cloud sign-in will pause for 2 hours. They accept that tradeoff because the policy requirement is non-negotiable. The clinical side, where uptime matters more, stays on PHS.</p>
+<h2>Check your understanding</h2>
+<ol><li>With PTA, where is the password validated?</li><li>How many PTA agents does Microsoft recommend for high availability, and why that number matters?</li><li>Which sign-in method keeps working if the on-premises data center loses internet: PHS or PTA?</li><li>A company requires its on-premises password expiry policy to apply to Microsoft 365 sign-ins. Which method do you recommend?</li></ol>
+<h2>Exam tip</h2>
+<p>The exam contrasts PHS and PTA in a single question stem. Anchor: PHS means the cloud validates (resilient), PTA means on-premises validates (policy control). Trigger phrases: &quot;agents,&quot; &quot;password never stored in the cloud,&quot; or &quot;on-premises lockout policy must apply&quot; all point to PTA. &quot;Must work during an outage&quot; points to PHS.</p>
+<h2>Key takeaways</h2>
+<ul><li>PTA validates passwords against on-premises AD at sign-in; no password material lives in the cloud.</li><li>On-premises password and lockout policies apply to cloud sign-ins.</li><li>Deploy at least 3 agents for high availability; if AD is unreachable, cloud sign-in stops.</li><li>Pair with Seamless SSO for silent sign-on inside the network.</li><li>Choose PTA for policy control, PHS for resilience, federation only when full on-premises control is required.</li></ul>
+</body></html>

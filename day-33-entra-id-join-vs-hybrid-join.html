@@ -1,0 +1,35 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Day 33: Entra ID Join vs. Hybrid Join</title><style>body{font-family:sans-serif;max-width:800px;margin:2em auto;padding:0 1em;line-height:1.6}table{border-collapse:collapse;margin:1em 0}th,td{border:1px solid #999;padding:6px 10px;text-align:left}pre{background:#f4f4f4;padding:1em;overflow-x:auto}</style></head><body>
+<p>Module 1: Identity and Governance | AZ-104 Domain: Manage Azure identities and governance (20-25%)</p>
+<h2>Watch (60 seconds)</h2>
+<p>[Video slot: Day 33 TikTok, &quot;Entra ID Join vs. Hybrid Join in Sixty Seconds.&quot; Embeds here once published. The lesson below stands on its own.]</p>
+<h2>The concept</h2>
+<p>Yesterday you met the 3 device states. Today is the comparison the exam asks about directly: when do you join devices straight to the cloud, and when do you keep 1 foot on-premises?</p>
+<p><strong>Microsoft Entra joined</strong> means the device is joined directly to the cloud directory. No on-premises Active Directory exists in the picture.</p>
+<ul><li>Best for: cloud-first organizations, new device fleets, remote workforces.</li><li>Sign-in: users sign in with their Entra ID credentials and get single sign-on to Microsoft 365 and SaaS apps.</li><li>Management: Microsoft Intune. Zero-touch provisioning with Windows Autopilot: the user unboxes the laptop, signs in, and policies and apps install themselves.</li><li>Note: Windows Home edition cannot Entra join. You need Pro, Enterprise, or Education.</li></ul>
+<p><strong>Microsoft Entra hybrid joined</strong> means the device is joined to on-premises Active Directory and also registered in Entra ID, using device objects synced by Entra Connect.</p>
+<ul><li>Best for: organizations migrating to the cloud, or ones that still need on-premises AD authentication (file shares, print servers, legacy apps).</li><li>Sign-in: single sign-on to both on-premises resources and cloud apps, especially when paired with Seamless SSO.</li><li>Management: Group Policy or Configuration Manager, optionally co-managed with Intune so Conditional Access can still require compliance.</li><li>Requirement: Entra Connect must be syncing device objects, which is configured during setup.</li></ul>
+<p><strong>Microsoft Entra registered</strong> (recap from Day 32) is the third option: BYOD. The user adds a work account to a personal device. Light management, no full join.</p>
+<p>Side by side:</p>
+<table><thead><tr><th></th><th>Entra joined</th><th>Hybrid joined</th></tr></thead><tbody><tr><td>Identity authority</td><td>Cloud (Entra ID)</td><td>On-premises AD, synced to cloud</td></tr><tr><td>Needs on-premises AD</td><td>No</td><td>Yes</td></tr><tr><td>Best for</td><td>Cloud-first, new fleets</td><td>Migration, on-premises apps</td></tr><tr><td>Management</td><td>Intune</td><td>Group Policy / ConfigMgr, optional co-management</td></tr><tr><td>Provisioning</td><td>Autopilot zero-touch</td><td>Traditional imaging or Autopilot</td></tr></tbody></table>
+<h2>Key vocabulary</h2>
+<ul><li><strong>Microsoft Entra joined</strong>: device joined directly to the cloud directory.</li><li><strong>Microsoft Entra hybrid joined</strong>: device joined to on-premises AD and registered in Entra ID.</li><li><strong>Seamless SSO</strong>: silent sign-on to cloud apps from domain-joined devices on the corporate network.</li><li><strong>Co-management</strong>: a device managed by both Configuration Manager and Intune.</li><li><strong>Windows Autopilot</strong>: zero-touch provisioning: unbox, sign in, configured automatically.</li></ul>
+<h2>Try it</h2>
+<p>Read-only. These commands change nothing.</p>
+<p><strong>On a Windows 10 or 11 device (your own PC is fine):</strong></p>
+<ol><li>Open a command prompt and run <code>dsregcmd /status</code>. Find the 2 lines <code>AzureAdJoined</code> and <code>DomainJoined</code>.</li></ol>
+<ul><li>AzureAdJoined YES and DomainJoined NO: Entra joined.</li><li>Both YES: hybrid joined.</li><li>Both NO with a workplace account present: registered.</li></ul>
+<ol><li>Go to <strong>Settings</strong> &gt; <strong>Accounts</strong> &gt; <strong>Access work or school</strong> to see the same state in plain language.</li></ol>
+<p><strong>In the portal:</strong></p>
+<ol><li>Microsoft Entra admin center &gt; <strong>Identity</strong> &gt; <strong>Devices</strong> &gt; <strong>All devices</strong>. Compare the Join Type column and see if you can spot all 3 states.</li></ol>
+<p><strong>Clean up:</strong> nothing was changed. <code>dsregcmd</code> only reads status.</p>
+<h2>Worked example: Meridian Health</h2>
+<p>Meridian Health is mid-migration, so it uses both:</p>
+<ul><li><strong>New clinic laptops:</strong> Entra joined with Autopilot and Intune. A nurse unboxes 1, signs in with her Entra account, and within minutes it has Wi-Fi profiles, the EHR app, and encryption enforced. No imaging server involved.</li><li><strong>Hospital workstations</strong> tied to on-premises imaging systems that authenticate against Active Directory: hybrid joined. They are managed by Configuration Manager today and co-managed with Intune so the Conditional Access policy requiring compliant devices still applies.</li></ul>
+<p>The rule they follow: if the device&#x27;s apps live in the cloud, Entra join it. If the device still needs on-premises AD every day, hybrid join it until the apps move.</p>
+<h2>Check your understanding</h2>
+<ol><li>A startup with no on-premises servers buys 200 new laptops. Which join type, and which provisioning tool pairs with it?</li><li>What does <code>dsregcmd /status</code> show on a hybrid joined device?</li><li>Which component must be syncing device objects for hybrid join to work?</li><li>True or false: Windows 11 Home can be Entra joined.</li></ol>
+<h2>Exam tip</h2>
+<p>The exam hands you a scenario and expects the join type. &quot;Migrating from on-premises AD&quot; or &quot;must keep single sign-on to on-premises file shares&quot; means hybrid joined. &quot;Cloud only&quot; or &quot;new devices, no on-premises infrastructure&quot; means Entra joined. If hybrid appears, check that Entra Connect device sync is in the picture.</p>
+<h2>Key takeaways</h2>
+<ul><li>Entra joined: cloud-native, Intune managed, best with Autopilot for new fleets.</li><li>Hybrid joined: on-premises AD plus cloud registration, for migration and on-premises apps.</li><li>Registered: BYOD, light management.</li><li><code>dsregcmd /status</code> tells you the truth on any Windows device: AzureAdJoined and DomainJoined.</li><li>Hybrid join depends on Entra Connect syncing device objects.</li></ul>
+</body></html>
